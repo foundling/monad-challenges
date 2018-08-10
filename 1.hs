@@ -60,21 +60,23 @@ randPair s = ((c,i),s'')
         (i,s'') = rand s' 
         (c,s') = randLetter s
 
-generalPair :: Gen a -> Gen b -> Gen (a,b) 
-generalPair genA genB s = ((a,b), s2)
-    where
-        (a, s1) = genA s
-        (b, s2) = genB s1
 
-generalB :: (a -> b -> c) -> Gen a -> Gen b -> Gen c
-generalB f genA genB s = (f a b, s'')
+-- note: we're passing in 's' after the two gen types, 
+-- so that's the 'Seed' in: Seed -> ((a,b), Seed)
+-- thus, we just need to return the resulting pair, 
+-- not the function that produces it
+generalPair :: Gen a -> Gen b -> Gen (a,b) 
+generalPair ga gb s = ((a,b),s'')
     where
-        (a, s')  = genA s
-        (b, s'') = genB s
+        (a,s')  = ga s 
+        (b,s'') = gb s'
+
+generalB :: (a -> b -> c) -> Gen a -> Gen b -> Gen c 
+generalB f ga gb s = (c, s'')
+    where   
+        c = f a b
+        (b, s'') = gb s'
+        (a, s') = ga s
 
 generalPair2 :: Gen a -> Gen b -> Gen (a,b)
 generalPair2 = generalB (,)
-
--- 1.5
-
--- takes a list of Gen a, returns a Gen of [a] 
