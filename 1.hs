@@ -80,3 +80,19 @@ generalB f ga gb s = (c, s'')
 
 generalPair2 :: Gen a -> Gen b -> Gen (a,b)
 generalPair2 = generalB (,)
+
+-- 1.5
+
+--repRandom :: [Gen a] -> Gen [a]
+--repRandom :: [(Seed -> (a, Seed))] -> Seed -> [a]
+--repRandom [] s = []
+--repRandom [ga] s = [a] 
+--    where
+--        (a,_) = ga s
+
+--repRandom :: [Gen a] -> Gen [a]
+repRandom :: [Seed -> (a, Seed)] -> Seed -> [a]
+repRandom [] s = []
+repRandom (g:gs) s = [a] ++ repRandom gs s'
+    where 
+        (a,s') = g s 
