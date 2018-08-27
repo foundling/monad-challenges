@@ -71,28 +71,22 @@ generalPair ga gb s = ((a,b),s'')
         (a,s')  = ga s 
         (b,s'') = gb s'
 
-generalB :: (a -> b -> c) -> Gen a -> Gen b -> Gen c 
-generalB f ga gb s = (c, s'')
-    where   
-        c = f a b
-        (b, s'') = gb s'
-        (a, s') = ga s
+generalB :: (a -> b -> c) -> Gen a -> Gen b -> Gen c
+generalB f ga gb s = (f a b,s)
+  where
+    (b, s'') = gb s'
+    (a, s') = ga s
 
 generalPair2 :: Gen a -> Gen b -> Gen (a,b)
 generalPair2 = generalB (,)
 
+
 -- 1.5
-
---repRandom :: [Gen a] -> Gen [a]
---repRandom :: [(Seed -> (a, Seed))] -> Seed -> [a]
---repRandom [] s = []
---repRandom [ga] s = [a] 
---    where
---        (a,_) = ga s
-
---repRandom :: [Gen a] -> Gen [a]
-repRandom :: [Seed -> (a, Seed)] -> Seed -> [a]
-repRandom [] s = []
-repRandom (g:gs) s = [a] ++ repRandom gs s'
-    where 
-        (a,s') = g s 
+repRandom :: [Seed -> (a, Seed)] -> Seed -> ([a], Seed)
+repRandom [] s = ([],s)
+repRandom (g:gs) s = addPair ([a],s') $ repRandom gs s' 
+    where
+        (a,s') = g s
+        addPair :: ([a],b) -> ([a],b) -> ([a],b)
+        addPair (xs,s) (ys, s') = (xs ++ ys, s') 
+        
