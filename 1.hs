@@ -81,14 +81,6 @@ generalPair2 :: Gen a -> Gen b -> Gen (a,b)
 generalPair2 = generalB (,)
 
 -- 1.5
-{--
-  repRandom :: [Seed -> (a, Seed)] -> Seed -> ([a], Seed)
-  repRandom [] s = ([],s)
-  repRandom (gen:gens) s = (x:fst rest,snd rest)  
-      where
-          (x,s') = gen s
-          rest = repRandom gens s'
---}
 repRandom :: [Seed -> (a, Seed)] -> Seed -> ([a], Seed)
 repRandom [] s = ([],s)
 repRandom (gen:gens) s = (x:xs,s'')  
