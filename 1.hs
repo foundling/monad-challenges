@@ -16,18 +16,15 @@ nextRandLetter :: (Char, Seed) -> (Char, Seed)
 nextRandLetter = randLetter . snd
 
 fiveRands :: [Integer]
-fiveRands = map fst . take 5 . iterate nextRand . rand . mkSeed $ 1
+fiveRands = map fst . take 5 . iterate nextRand . rand $ mkSeed 1
 
 -- 1.2
 
-lift1 :: (a -> b) -> (a,c) -> (b,c)
-lift1 f (a,b) = (f a, b)  
-
-lift2 :: (b -> c) -> (a,b) -> (a,c)
-lift2 f (a,b) = (a, f b)  
+lift' :: (a -> b) -> (a,c) -> (b,c)
+lift' f (a,b) = (f a, b)
 
 randLetter :: Gen Char
-randLetter = lift1 toLetter . rand
+randLetter = lift' toLetter . rand
 
 randString3 :: [Char]
 randString3 = map fst . take 3 . iterate nextRandLetter . randLetter $ mkSeed 1
