@@ -80,13 +80,11 @@ generalB f ga gb s = (f a b,s)
 generalPair2 :: Gen a -> Gen b -> Gen (a,b)
 generalPair2 = generalB (,)
 
-
 -- 1.5
 repRandom :: [Seed -> (a, Seed)] -> Seed -> ([a], Seed)
 repRandom [] s = ([],s)
-repRandom (g:gs) s = addPair ([a],s') $ repRandom gs s' 
+repRandom (g:gs) s = (x:fst rest,snd rest)  
     where
-        (a,s') = g s
-        addPair :: ([a],b) -> ([a],b) -> ([a],b)
-        addPair (xs,s) (ys, s') = (xs ++ ys, s') 
-        
+        (x,s') = g s
+        rest = repRandom gs s'
+
