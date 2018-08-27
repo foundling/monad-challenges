@@ -9,14 +9,21 @@ type Gen a = Seed -> (a, Seed)
 
 -- 1.1
 
-nextRand :: (a, Seed) -> (Integer, Seed)
+nextRand :: (Integer,Seed) -> (Integer,Seed)
 nextRand = rand . snd 
 
-nextRandLetter :: (Char, Seed) -> (Char, Seed)
+nextRandLetter :: (Char,Seed) -> (Char,Seed)
 nextRandLetter = randLetter . snd
 
+-- abstract the gen
+-- next :: Gen Integer -> (Integer,Seed) -> (Integer,Seed)
+
 fiveRands :: [Integer]
-fiveRands = map fst . take 5 . iterate nextRand . rand $ mkSeed 1
+fiveRands = heads . take n . iterate nextRand . rand $ seed
+    where
+        n = 5
+        seed = mkSeed 1
+        heads = map fst
 
 -- 1.2
 
@@ -84,3 +91,10 @@ repRandom (gen:gens) s = (x:xs,s'')
     where
         (x,s') = gen s
         (xs,s'') = repRandom gens s'
+
+
+data Pair a b = Pair (a,b)
+    deriving (Show, Eq)
+
+
+
