@@ -19,11 +19,10 @@ nextRandLetter = randLetter . snd
 -- next :: Gen Integer -> (Integer,Seed) -> (Integer,Seed)
 
 fiveRands :: [Integer]
-fiveRands = heads . take n . iterate nextRand . rand $ seed
+fiveRands = map fst . take n . iterate nextRand . rand $ seed
     where
         n = 5
         seed = mkSeed 1
-        heads = map fst
 
 -- 1.2
 
@@ -93,8 +92,13 @@ repRandom (gen:gens) s = (x:xs,s'')
         (xs,s'') = repRandom gens s'
 
 
-data Pair a b = Pair (a,b)
-    deriving (Show, Eq)
+-- 1.6
 
+genTwo :: Gen a -> (a -> Gen b) -> Gen b
+genTwo ga f s = genB 
+    where 
+        genB = f v s' 
+        (v,s') = ga s
 
-
+mkGen :: a -> Gen a
+mkGen v s = (v,s) 
